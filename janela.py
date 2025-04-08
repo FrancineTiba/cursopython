@@ -1,30 +1,24 @@
-import tkinter 
+import tkinter as tk # importação da biblioteca
+from tkinter import messagebox # è uma janela que aparece como resposta do processamento dos dados
 
-root = tkinter.Tk()
-root.title("Senai")
-root.geometry("800x600")
+def mostraFrase(): # def() ->  criou uma função para mostrar a frase
+    nome =entryNome.get() #  get() -> Captura o nome para armazenar dentro da objeto(EntryNome) nome
+    messagebox.showinfo("Saudações","Bom dia " + nome) # função que foi criada para exibir a mensagem no momento do clique no botão
 
-labelFrase = tkinter.Label(root,
-                           text='Olá, Developer!',
-                           font=('Magneto',72),
-                           fg='#FF97CF',
-                           bg='lightblue')
-labelFrase.pack(padx=5,pady=5)
+janela = tk.Tk() #Função
+janela.geometry('600x400') #Dimensões da area
+janela.title('Curso Pyhon Senai') #Titulo
 
-labelNome = tkinter.Label(root,
-                          text='Digite seu nome:',
-                          font=('Lucida Calligraphy',25),
-                          fg='#6B3FA0')
-labelNome.pack(padx=5,pady=5)
+frase = tk.Label(janela, text='Meu primeiro programa grafico', bg='purple',fg='aqua', font=('Arial',26, )) #comando de saida, determinado pelo programador
+frase.pack(padx=5,pady=10)
 
-entryNome = tkinter.Entry(root,width=50,
-                          font=('Verdana',22))
-entryNome.pack(padx=5,pady=5)
+labelNome=tk.Label(janela,  text='Qual o seu nome?',fg = 'blue' ,font = ('Arial', 24) ) #comando de saida determinado pelo programdor
+labelNome.pack(padx=5,pady=10)
 
-buttonGravar = tkinter.Button(root,text="Gravar",
-                              command=None)
-buttonGravar.pack(padx=5,pady=5)
+entryNome = tk.Entry(janela) #comando de entrada que o usuário vai digitar o texto
+entryNome.pack(padx=5,pady=10)
 
+buttonFrase = tk.Button(janela, text='Clique-me',command = mostraFrase) # objeto de criação do botão
+buttonFrase.pack(padx=5,pady=10)
 
-
-root.mainloop()
+janela.mainloop() # controla o tempo de permanência da janela aberta.

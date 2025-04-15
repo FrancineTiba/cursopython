@@ -67,10 +67,115 @@ def preencher_campos_selecionados(event):
         whatsapp_entry.insert(0, valores[3])
         linkedin_entry.insert(0, valores[4])
         github_entry.insert(0, valores[5])
+
+def remover_contato():
+    selected_item = tree.selection()
+    if not selected_item:
+        messagebox.showerror("Erro", "Selecione um contato para remover!")
+        return
+    
+    contato_id = tree.item(selected_item)['values'][0]
+    
+    if messagebox.askyesno("Confirmação", "Tem certeza que deseja remover este contato?"):
+        del contatos[contato_id]  # Remove o contato do dicionário usando o ID como chave
+        messagebox.showinfo("Sucesso", "Contato removido com sucesso!")
+        limpar_campos()
+        atualizar_treeview()  
+
+def localizar_contato():
+    termo_busca = nome_entry.get().strip().lower()  # Pega o termo de busca do campo Nome
+    
+    if not termo_busca:
+        messagebox.showwarning("Aviso", "Digite um nome para buscar!")
+        return
+    
+    # Limpa qualquer seleção anterior
+    for item in tree.selection():
+        tree.selection_remove(item)
+    
+    encontrados = False
+    
+    # Percorre todos os itens na Treeview
+    for item in tree.get_children():
+        nome = tree.item(item)['values'][1].lower()  # Pega o nome do contato (índice 1)
         
+        if termo_busca in nome:
+            tree.selection_add(item)  # Seleciona o item encontrado
+            tree.focus(item)
+            tree.see(item)  # Rola a Treeview até o item
+            encontrados = True
+    
+    if not encontrados:
+        messagebox.showinfo("Busca", "Nenhum contato encontrado com esse nome.")
+
+def atualizar_contato():
+    selected_item = tree.selection()
+    if not selected_item:
+        messagebox.showerror("Erro", "Selecione um contato para atualizar!")
+        return
+    
+    # Pega os dados dos campos do formulário
+    novo_nome = nome_entry.get().strip()
+    nova_data = data_entry.get().strip()
+    novo_whatsapp = whatsapp_entry.get().strip()
+    novo_linkedin = linkedin_entry.get().strip()
+    novo_github = github_entry.get().strip()
+    
+    if not novo_nome:
+        messagebox.showerror("Erro", "O campo Nome é obrigatório!")
+        return
+    
+    # Obtém o ID do contato selecionado
+    contato_id = tree.item(selected_item)['values'][0]
+    
+    # Atualiza os dados no dicionário de contatos
+    contatos[contato_id] = {
+        "nome": novo_nome,
+        "data_nascimento": nova_data if nova_data else "Não informado",
+        "whatsapp": novo_whatsapp if novo_whatsapp else "Não informado",
+        "linkedin": novo_linkedin if novo_linkedin else "Não informado",
+        "github": novo_github if novo_github else "Não informado"
+    }
+    
+    messagebox.showinfo("Sucesso", "Contato atualizado com sucesso!")
+    atualizar_treeview()
+    limpar_campos()
+
+def atualizar_contato():
+    selected_item = tree.selection()
+    if not selected_item:
+        messagebox.showerror("Erro", "Selecione um contato para atualizar!")
+        return
+    
+    # Pega os dados dos campos do formulário
+    novo_nome = nome_entry.get().strip()
+    nova_data = data_entry.get().strip()
+    novo_whatsapp = whatsapp_entry.get().strip()
+    novo_linkedin = linkedin_entry.get().strip()
+    novo_github = github_entry.get().strip()
+    
+    if not novo_nome:
+        messagebox.showerror("Erro", "O campo Nome é obrigatório!")
+        return
+    
+    # Obtém o ID do contato selecionado
+    contato_id = tree.item(selected_item)['values'][0]
+    
+    # Atualiza os dados no dicionário de contatos
+    contatos[contato_id] = {
+        "nome": novo_nome,
+        "data_nascimento": nova_data if nova_data else "Não informado",
+        "whatsapp": novo_whatsapp if novo_whatsapp else "Não informado",
+        "linkedin": novo_linkedin if novo_linkedin else "Não informado",
+        "github": novo_github if novo_github else "Não informado"
+    }
+    
+    messagebox.showinfo("Sucesso", "Contato atualizado com sucesso!")
+    atualizar_treeview()
+    limpar_campos()
 # Configuração inicial
 root = tk.Tk()
-root.title("Sistema de Contatos")
+root.title("Contact Systens")
 root.geometry("800x600")
 
 # Base de dados em dicionário
@@ -78,7 +183,7 @@ contatos = {}
 id_counter = 1
 
 # Interface gráfica
-main_frame = tk.Frame(root, padx=20, pady=20)
+main_frame = tk.LabelFrame(root, padx=20, pady=20)
 main_frame.pack(fill=tk.BOTH, expand=True)
 
 # Frame de formulário
@@ -111,10 +216,10 @@ button_frame = tk.Frame(main_frame)
 button_frame.pack(fill=tk.X, pady=(0, 10))
 
 tk.Button(button_frame, text="Adicionar", width=15, command=adicionar_contato).grid(row=0, column=0, padx=10)
-tk.Button(button_frame, text="Atualizar",width=15, command=None).grid(row=0, column=1, padx=10)
-tk.Button(button_frame, text="Excluir",width=15, command=None).grid(row=0,column=2, padx=10)
+tk.Button(button_frame, text="Atualizar",width=15, command=atualizar_contato).grid(row=0, column=1, padx=10)
+tk.Button(button_frame, text="Excluir",width=15, command=remover_contato).grid(row=0,column=2, padx=10)
 tk.Button(button_frame, text="Limpar",width=15, command=limpar_campos).grid(row=0,column=3, padx=10)
-tk.Button(button_frame, text="Localizar",width=15, command=None).grid(row=0,column=4, padx=10)
+tk.Button(button_frame, text="Localizar",width=15, command=localizar_contato).grid(row=0,column=4, padx=10)
 
 # Treeview para exibir os contatos
 tree = ttk.Treeview(main_frame, columns=("ID", "Nome", "Nascimento", "WhatsApp", "LinkedIn", "GitHub"), show="headings")
